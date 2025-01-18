@@ -24,11 +24,11 @@ class UserBo
         return $this->userDao->create($data);
     }
 
-    public function updateUser($user, array $data)
+    public function updateUser($id, array $data)
     {
         if (isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         }
-        return $this->userDao->update($user, $data);
+        return $this->userDao->update($id, $data);
     }
 }

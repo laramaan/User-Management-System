@@ -14,7 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/users/manage', [UserController::class, 'renderUsers']);
+Route::get('/', [UserController::class, 'renderUsers']);

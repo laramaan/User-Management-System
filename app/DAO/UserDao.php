@@ -18,12 +18,18 @@ class UserDao
         }
     }
 
-    public function update(User $user, array $data)
+    public function update($id, array $data)
     {
-        $user->update($data);
-        Cache::forget("user_{$user->id}");
-        Cache::forget("all_users");
-        return $user;
+        $user = User::find($id);
+
+        if ($user) {
+            $user->update($data);
+            Cache::forget("user_{$user->id}");
+            Cache::forget("all_users");
+            return $user;
+        }else{
+            return false;
+        }
     }
 
     public function find(int $id)

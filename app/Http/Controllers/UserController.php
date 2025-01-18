@@ -36,14 +36,22 @@ class UserController extends Controller
         }
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, $id)
     {
         try {
-            $updatedUser = $this->userService->updateUser($user, $request->validated());
-            return response()->json([
-                'message' => 'User updated successfully',
-                'user' => $updatedUser,
-            ], 200);
+            $updatedUser = $this->userService->updateUser($id, $request->validated());
+
+            if ($updatedUser) {
+                return response()->json([
+                    'message' => 'User updated successfully.',
+                    'user' => $updatedUser,
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'User not found',
+                    'user' => '',
+                ], 404);
+            }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update user', 'message' => $e->getMessage()], 500);
         }
@@ -55,7 +63,4 @@ class UserController extends Controller
         $users = $this->userService->getAllUsers();
         return view('users.index', compact('users'));
     }
-
-
-
 }

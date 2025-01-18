@@ -71,12 +71,12 @@
                         </div>
                         <div class="mb-3" id="passwordField">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control" required>
+                            <input type="password" id="password" name="password" class="form-control">
                         </div>
                         <div class="mb-3" id="passwordConfirmationField">
                             <label for="password_confirmation" class="form-label">Confirm Password</label>
                             <input type="password" id="password_confirmation" name="password_confirmation"
-                                class="form-control" required>
+                                class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -97,7 +97,11 @@
             document.getElementById('name').value = '';
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
+            document.getElementById('password_confirmation').value = '';
             document.getElementById('passwordField').style.display = 'block';
+            document.getElementById('passwordConfirmationField').style.display = 'block';
+            document.getElementById('password').disabled = false;
+            document.getElementById('password_confirmation').disabled = false;
             const modal = new bootstrap.Modal(document.getElementById('userModal'));
             modal.show();
         }
@@ -105,12 +109,13 @@
         // Show Update User Form
         function showUpdateUserForm(user) {
             document.getElementById('modalTitle').innerText = 'Update User';
-            document.getElementById('userId').value = user.id;  // Set the user ID for update
-            document.getElementById('name').value = user.name;  // Set name for update
-            document.getElementById('email').value = user.email; // Set email for update
-            document.getElementById('passwordField').style.display = 'none'; // Hide password field on update
-            document.getElementById('password').value = ''; // Clear password field
-            document.getElementById('password_confirmation').value = ''; // Clear confirm password field
+            document.getElementById('userId').value = user.id;
+            document.getElementById('name').value = user.name;
+            document.getElementById('email').value = user.email;
+            document.getElementById('passwordField').style.display = 'none';
+            document.getElementById('passwordConfirmationField').style.display = 'none';
+            document.getElementById('password').disabled = true;
+            document.getElementById('password_confirmation').disabled = true;
             const modal = new bootstrap.Modal(document.getElementById('userModal'));
             modal.show();
         }
@@ -122,23 +127,33 @@
             const userId = document.getElementById('userId').value;
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const passwordConfirmation = document.getElementById('password_confirmation').value;
 
-            const payload = {
+            let payload = {
                 name,
                 email,
             };
 
+            // Include password fields only for creating a new user
             if (!userId) {
-                // Add password and confirmation for create
-                payload.password = password;
-                payload.password_confirmation = passwordConfirmation;
+                const password = document.getElementById('password').value;
+                const passwordConfirmation = document.getElementById('password_confirmation').value;
+                payload = {
+                    ...payload,
+                    password,
+                    password_confirmation: passwordConfirmation,
+                };
             }
 
+            // Determine API endpoint and method
+            const apiUrl = userId ?
+                `api/v1/user/update/${userId}` // Laravel Update API route
+                :
+                '/api/v1/user/create'; // Laravel Create API route
+            const method = userId ? 'PUT' : 'POST';
+
             try {
-                const response = await fetch(`/api/v1/user/${userId ? `update/${userId}` : 'create'}`, {
-                    method: userId ? 'PUT' : 'POST',
+                const response = await fetch(apiUrl, {
+                    method: method,
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -148,19 +163,17 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Hide errors and reset the form on success
                     clearErrors();
                     displaySuccessMessage(data.message || 'Operation successful');
                     location.reload(); // Reload to fetch updated data
                 } else {
-                    // Show errors on the frontend
                     displayErrors(data.errors || {
-                        message: data.message || 'An error occurred'
+                        message: data.message || 'An error occurred',
                     });
                 }
             } catch (error) {
                 displayErrors({
-                    message: 'Failed to communicate with the server'
+                    message: 'Failed to communicate with the server',
                 });
             }
         });
@@ -169,7 +182,7 @@
         function displaySuccessMessage(message) {
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = message;
-            successMessage.classList.remove('d-none'); // Show the success section
+            successMessage.classList.remove('d-none');
         }
 
         // Function to Display Errors on Frontend
@@ -177,10 +190,8 @@
             const errorMessages = document.getElementById('errorMessages');
             const errorList = document.getElementById('errorList');
 
-            // Clear previous errors
-            errorList.innerHTML = '';
+            errorList.innerHTML = ''; // Clear previous errors
 
-            // Inject new errors
             if (typeof errors === 'object') {
                 Object.values(errors).forEach((error) => {
                     const li = document.createElement('li');
@@ -193,7 +204,7 @@
                 errorList.appendChild(li);
             }
 
-            errorMessages.classList.remove('d-none'); // Show the error section
+            errorMessages.classList.remove('d-none');
         }
 
         // Function to Clear Errors
@@ -201,10 +212,11 @@
             const errorMessages = document.getElementById('errorMessages');
             const errorList = document.getElementById('errorList');
 
-            errorList.innerHTML = ''; // Clear error list
-            errorMessages.classList.add('d-none'); // Hide error section
+            errorList.innerHTML = '';
+            errorMessages.classList.add('d-none');
         }
     </script>
+
 
 </body>
 

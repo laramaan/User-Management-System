@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/user/create', [UserController::class, 'store']);
-    Route::put('/user/update/{user}', [UserController::class, 'update']);
+    Route::put('/user/update/{id}', [UserController::class, 'update']);
 });

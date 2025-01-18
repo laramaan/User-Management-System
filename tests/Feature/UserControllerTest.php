@@ -24,8 +24,6 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
-                    'created_at',
-                    'updated_at',
                 ],
             ]);
     }
@@ -48,8 +46,6 @@ class UserControllerTest extends TestCase
                     'id',
                     'name',
                     'email',
-                    'created_at',
-                    'updated_at',
                 ],
             ]);
 
@@ -60,7 +56,7 @@ class UserControllerTest extends TestCase
 
     public function test_update_user()
     {
-        // Update user
+        // Create a user
         $user = User::factory()->create();
 
         $updateData = [
@@ -72,7 +68,7 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'User updated successfully',
+                'message' => 'User updated successfully.',
                 'user' => [
                     'id' => $user->id,
                     'name' => 'Updated Name',
@@ -80,6 +76,7 @@ class UserControllerTest extends TestCase
                 ],
             ]);
 
+        // Ensure the database reflects the update
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'name' => 'Updated Name',
@@ -88,6 +85,7 @@ class UserControllerTest extends TestCase
 
     public function test_update_nonexistent_user()
     {
+        // Attempt to update a user that doesn't exist
         $response = $this->putJson('/api/v1/user/update/999', [
             'name' => 'Non-existent User',
         ]);

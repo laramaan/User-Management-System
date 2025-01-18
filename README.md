@@ -11,6 +11,7 @@ This project is a **User Management System** built with Laravel 10, following a 
 - **Caching**: Reduces repetitive database queries to improve performance.
 - **Layered Architecture**: DAO, BO, and Service layers for separation of concerns.
 - **Unit Testing**: PHPUnit tests to ensure functionality.
+- **Front-End Interface**: Added Table format CRUD operations.
 
 ---
 
@@ -40,11 +41,15 @@ Ensure you have the following installed on your system:
    DB_USERNAME=your_database_user
    DB_PASSWORD=your_database_password
 
-4. Run database migrations:
+4. Generate the Application Key
+   ```bash
+   php artisan key:generate
+
+5. Run database migrations:
    ```bash
    php artisan migrate
 
-5. Start the development server:
+6. Start the development server:
    ```bash
    php artisan serve
 
@@ -53,10 +58,12 @@ Ensure you have the following installed on your system:
 All endpoints are prefixed with /api/v1.
 
 ## Folder Structure
-app/
-├── DAO/                # Data Access Object layer
-├── BO/                 # Business Object layer
-├── Services/           # Service layer
-├── Http/
-│   ├── Controllers/    # API Controllers
-│   ├── Requests/       # Request validation
+```bash
+    app/
+    ├── DAO/                # Data Access Object layer
+    ├── BO/                 # Business Object layer
+    ├── Services/           # Service layer
+    ├── Http/
+    │   ├── Controllers/    # API Controllers
+    │   ├── Requests/       # Request validation
+```

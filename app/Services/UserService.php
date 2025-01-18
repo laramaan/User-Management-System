@@ -23,8 +23,8 @@ class UserService
         return $this->userBo->createUser($data);
     }
 
-    public function updateUser($user, array $data)
+    public function updateUser($id, array $data)
     {
-        return $this->userBo->updateUser($user, $data);
+        return $this->userBo->updateUser($id, $data);
     }
 }
