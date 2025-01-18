@@ -13,7 +13,7 @@ class UserService
         $this->userBo = $userBo;
     }
 
-    public function getUser()
+    public function getAllUsers()
     {
         return $this->userBo->getUser();
     }

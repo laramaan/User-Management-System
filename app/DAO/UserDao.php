@@ -10,8 +10,12 @@ class UserDao
 {
     public function create(array $data)
     {
-        Cache::forget("all_users");
-        return User::create($data);
+        try {
+            Cache::forget("all_users");
+            return User::create($data);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     public function update(User $user, array $data)
